@@ -52,8 +52,7 @@
                 // loadlive2d("live2d", `${this.apiPath}get/?id=${t}-${s}`), console.log(`Live2D 模型 ${t}-${s} 加载完成`)
 
                 // https://live2d.fghrsh.net/api/get/?id=1-53, 请求链接更换模型
-                // let num = 1 + Math.floor(Math.random() * 12);
-                let num = 1;
+                let num = 1 + Math.floor(Math.random() * 12);
                 let filePath = "/live2d-widget/model/model" + num + ".json";
                 console.log(`Live2D 模型文件路径 ==> ${filePath}`);
                 loadlive2d("live2d", filePath);
