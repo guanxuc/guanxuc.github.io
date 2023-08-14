@@ -52,8 +52,16 @@
                 // loadlive2d("live2d", `${this.apiPath}get/?id=${t}-${s}`), console.log(`Live2D 模型 ${t}-${s} 加载完成`)
 
                 // https://live2d.fghrsh.net/api/get/?id=1-53, 请求链接更换模型
-                let num = 1 + Math.floor(Math.random() * 12);
-                let filePath = "/live2d-widget/model/model" + num + ".json";
+                const live2dPathArr = [
+                    "model_Pio_school_2017_custume_gray.json",
+                    "model_Tia_sakura_costume_navy.json",
+                    "model_bilibili_live22.json",
+                    "model_shizuku48.json",
+                    "model_nepnep.json",
+                    "model_noire_classic.json"
+                ];
+                let num = Math.floor(Math.random() * live2dPathArr.length);
+                let filePath = "/live2d-widget/model/" + live2dPathArr[num];
                 console.log(`Live2D 模型文件路径 ==> ${filePath}`);
                 loadlive2d("live2d", filePath);
                 console.log(`Live2D 模型加载完成`);
