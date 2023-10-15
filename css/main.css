@@ -1221,7 +1221,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #774e4a;
+  background: #6af7ff;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2613,10 +2613,29 @@ ul.breadcrumb li + li:last-child {
     margin: 8px 0 0;
   }
 }
-* {
-  cursor: url("/cursors-file/1/normal.cur"), default;
+body {
+  cursor: url("/images/my_cursors/1/normal.cur"), auto;
 }
 a,
 img {
-  cursor: url("/cursors-file/1/link.cur"), pointer;
+  cursor: url("/images/my_cursors/1/link.cur"), pointer;
+}
+.button,
+.copy-btn {
+  cursor: url("/images/my_cursors/1/link.cur"), pointer;
+}
+.back-to-top.back-to-top-on {
+  bottom: 30px;
+  cursor: url("/images/my_cursors/1/link.cur"), pointer;
+}
+.posts-expand .post-meta time {
+  border-bottom: 1px dashed #999;
+  cursor: url("/images/my_cursors/1/link.cur"), pointer;
+}
+input,
+textarea {
+  cursor: url("/images/my_cursors/1/text.cur"), text;
+}
+.navbar-main .navbar-item {
+  cursor: url("/images/my_cursors/1/link.cur"), auto;
 }
