@@ -1221,7 +1221,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #754129;
+  background: #6f88f4;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2612,4 +2612,11 @@ ul.breadcrumb li + li:last-child {
   .pagination {
     margin: 8px 0 0;
   }
+}
+* {
+  cursor: url("/cursors-file/1/normal.cur"), default;
+}
+a,
+img {
+  cursor: url("/cursors-file/1/link.cur"), pointer;
 }
