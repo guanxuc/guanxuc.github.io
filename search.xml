@@ -19,42 +19,31 @@
 ]]></content>
   </entry>
   <entry>
-    <title>Dockerfile部署Springboot项目</title>
-    <url>/2023/12/04/docker/dockerfile_deploy_springboot/</url>
-    <content><![CDATA[<p>Dokcerfile官方文档：<a href="https://docs.docker.com/engine/reference/builder/">https://docs.docker.com/engine/reference/builder/</a><br>Docker仓库地址：<a href="https://hub.docker.com/">https://hub.docker.com/</a><br>官方镜像github地址：<a href="https://github.com/docker-library/official-images">https://github.com/docker-library/official-images</a></p>
+    <title>SpringBoot Jar瘦身</title>
+    <url>/2024/01/01/springboot/springboot_Jar_thin/</url>
+    <content><![CDATA[<p>由于springboot打出来的jar包含了第三方引入的jar包，所以这就会导致打出来的jar包臃肿而又庞大。如果可以将第三方所引入的jar包先保存到指定的目录下，然后启动springboot<br>jar包时指向所需要三方jar包的目录，这时就可以起到jar包瘦身的目的。</p>
 <span id="more"></span>
 
-<h1 id="Dockerfile创建运行环境"><a href="#Dockerfile创建运行环境" class="headerlink" title="Dockerfile创建运行环境"></a>Dockerfile创建运行环境</h1><p>环境要求：centos7.9.2009服务器 + JDK8</p>
-<ul>
-<li><p>编写Dockerfile</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">FROM centos:centos7.9.2009</span><br><span class="line"></span><br><span class="line">LABEL version=<span class="string">&quot;1.0&quot;</span></span><br><span class="line">LABEL author=<span class="string">&quot;xg&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加并解压缩jdk安装包</span></span><br><span class="line">ADD ./jdk-8u381-linux-aarch64.tar.gz /usr/local/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装jdk</span></span><br><span class="line">RUN <span class="built_in">rm</span> -rf /usr/local/jdk-8u381-linux-aarch64.tar.gz &amp;&amp; yum clean all</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">ENV JAVA_HOME=/usr/local/jdk1.8.0_381</span><br><span class="line">ENV PATH=<span class="variable">$PATH</span>:<span class="variable">$JAVA_HOME</span>/bin</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置工作目录，在这个目录下存放springboot jar包</span></span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">CMD [<span class="string">&quot;bash&quot;</span>]</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>构建镜像</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -t参数指定镜像名称以及版本，即：centos7/jdk8:1.0</span></span><br><span class="line">docker build -t centos7/jdk8:1.0 .</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>查看镜像</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker images</span><br><span class="line"></span><br><span class="line"><span class="comment"># 出现下面内容表示构建成功</span></span><br><span class="line">REPOSITORY     TAG                 IMAGE ID       CREATED         SIZE</span><br><span class="line">centos7/jdk8   1.0                 44af210bd7d2   20 hours ago    503MB</span><br></pre></td></tr></table></figure></li>
+<h1 id="1、导出三方jar包"><a href="#1、导出三方jar包" class="headerlink" title="1、导出三方jar包"></a>1、导出三方jar包</h1><ul>
+<li>可以通过解压工具，对 jar 进行解压，复制出 lib 下的依赖jar包（比较麻烦不推荐）</li>
+<li>使用maven命令将三方依赖导出，建议使用绝对路径</li>
 </ul>
-<h1 id="Dockerfile部署Springboot项目"><a href="#Dockerfile部署Springboot项目" class="headerlink" title="Dockerfile部署Springboot项目"></a>Dockerfile部署Springboot项目</h1><p>基于刚刚构建好的 centos7&#x2F;jdk8:1.0 环境，将springboot jar包部署到运行环境</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -DoutputDirectory参数指定jar包导出的目录</span></span><br><span class="line">mvn dependency:copy-dependencies -DoutputDirectory=/Users/guanxu/lib -DincludeScope=runtime</span><br></pre></td></tr></table></figure>
+
 <ul>
-<li><p>编写Dockerfile</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">FROM centos7/jdk8:1.0</span><br><span class="line"></span><br><span class="line">LABEL version=<span class="string">&quot;1.0&quot;</span></span><br><span class="line">LABEL author=<span class="string">&quot;xg&quot;</span></span><br><span class="line"></span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">COPY ./boot-dockerfile-1.0-SNAPSHOT.jar /app/boot-dockerfile-1.0-SNAPSHOT.jar</span><br><span class="line"></span><br><span class="line"><span class="comment"># 暴露Tomcat访问端口</span></span><br><span class="line">EXPOSE 8080</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行jar包</span></span><br><span class="line">CMD [<span class="string">&quot;java&quot;</span>, <span class="string">&quot;-jar&quot;</span>, <span class="string">&quot;boot-dockerfile-1.0-SNAPSHOT.jar&quot;</span>]</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>构建Dockerfile</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker build -t bootjar:1.0 .</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>启动Docker镜像</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -dit -p 8080:8080 bootjar:1.0</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>测试</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl <span class="string">&quot;http://10.211.55.10:8080/hello?val=docker&quot;</span></span><br><span class="line"></span><br><span class="line">hello, docker</span><br></pre></td></tr></table></figure></li>
+<li>配置到pom文件中，打包时自动将三方依赖导出，见第二节(推荐使用)</li>
 </ul>
+<h1 id="2、修改pom文件配置"><a href="#2、修改pom文件配置" class="headerlink" title="2、修改pom文件配置"></a>2、修改pom文件配置</h1><p>修改springboot项目pom文件，使用spring-boot-maven-plugin插件进行打包时，不包含第三方jar包，达到瘦身的效果。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-dependency-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.8<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"></span><br><span class="line">      <span class="comment">&lt;!--将依赖的三方jar包, 导出到指定目录, 当前指定的是默认的target目录--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">id</span>&gt;</span>copy-dependencies<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">goal</span>&gt;</span>copy-dependencies<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>$&#123;project.build.directory&#125;/lib<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">excludeTransitive</span>&gt;</span>false<span class="tag">&lt;/<span class="name">excludeTransitive</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">stripVersion</span>&gt;</span>false<span class="tag">&lt;/<span class="name">stripVersion</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">silent</span>&gt;</span>true<span class="tag">&lt;/<span class="name">silent</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--springboot打包插件(瘦身版), 不包含三方jar包--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.2.1.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"></span><br><span class="line">      <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">id</span>&gt;</span>repackage<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">goal</span>&gt;</span>repackage<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line"></span><br><span class="line">      <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--用来配置可执行jar包中Main-Class的类型，这里一定要设置为ZIP，使打的jar包中的Main-Class为PropertiesLauncher--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">layout</span>&gt;</span>ZIP<span class="tag">&lt;/<span class="name">layout</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!--将需要保留的jar包，按照groupId和artifactId（注意两个都是必填项）include进来。nothing代表不存在的依赖包，意思就是什么依赖包都不引入--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">include</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>nothing<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>nothing<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="3、启动jar包指定第三方jar包目录"><a href="#3、启动jar包指定第三方jar包目录" class="headerlink" title="3、启动jar包指定第三方jar包目录"></a>3、启动jar包指定第三方jar包目录</h1><p>使用java -jar命令时加上 -Dloader.path&#x3D;~&#x2F;lib 参数指定第三方jar包的目录，因为上述操作三方jar导出的目录是 ~&#x2F;lib，所以指定参数也是这个目录</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">java -Dloader.path=/Users/guanxu/lib -jar xxx.jar</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
-        <category>docker</category>
+        <category>springboot</category>
       </categories>
       <tags>
-        <tag>docker</tag>
+        <tag>springboot</tag>
       </tags>
   </entry>
   <entry>
@@ -102,6 +91,45 @@
       <tags>
         <tag>网络</tag>
         <tag>工具</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Dockerfile部署Springboot项目</title>
+    <url>/2023/12/04/docker/dockerfile_deploy_springboot/</url>
+    <content><![CDATA[<p>Dokcerfile官方文档：<a href="https://docs.docker.com/engine/reference/builder/">https://docs.docker.com/engine/reference/builder/</a><br>Docker仓库地址：<a href="https://hub.docker.com/">https://hub.docker.com/</a><br>官方镜像github地址：<a href="https://github.com/docker-library/official-images">https://github.com/docker-library/official-images</a></p>
+<span id="more"></span>
+
+<h1 id="Dockerfile创建运行环境"><a href="#Dockerfile创建运行环境" class="headerlink" title="Dockerfile创建运行环境"></a>Dockerfile创建运行环境</h1><p>环境要求：centos7.9.2009服务器 + JDK8</p>
+<ul>
+<li><p>编写Dockerfile</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">FROM centos:centos7.9.2009</span><br><span class="line"></span><br><span class="line">LABEL version=<span class="string">&quot;1.0&quot;</span></span><br><span class="line">LABEL author=<span class="string">&quot;xg&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加并解压缩jdk安装包</span></span><br><span class="line">ADD ./jdk-8u381-linux-aarch64.tar.gz /usr/local/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装jdk</span></span><br><span class="line">RUN <span class="built_in">rm</span> -rf /usr/local/jdk-8u381-linux-aarch64.tar.gz &amp;&amp; yum clean all</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">ENV JAVA_HOME=/usr/local/jdk1.8.0_381</span><br><span class="line">ENV PATH=<span class="variable">$PATH</span>:<span class="variable">$JAVA_HOME</span>/bin</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置工作目录，在这个目录下存放springboot jar包</span></span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">CMD [<span class="string">&quot;bash&quot;</span>]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>构建镜像</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -t参数指定镜像名称以及版本，即：centos7/jdk8:1.0</span></span><br><span class="line">docker build -t centos7/jdk8:1.0 .</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看镜像</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker images</span><br><span class="line"></span><br><span class="line"><span class="comment"># 出现下面内容表示构建成功</span></span><br><span class="line">REPOSITORY     TAG                 IMAGE ID       CREATED         SIZE</span><br><span class="line">centos7/jdk8   1.0                 44af210bd7d2   20 hours ago    503MB</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="Dockerfile部署Springboot项目"><a href="#Dockerfile部署Springboot项目" class="headerlink" title="Dockerfile部署Springboot项目"></a>Dockerfile部署Springboot项目</h1><p>基于刚刚构建好的 centos7&#x2F;jdk8:1.0 环境，将springboot jar包部署到运行环境</p>
+<ul>
+<li><p>编写Dockerfile</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">FROM centos7/jdk8:1.0</span><br><span class="line"></span><br><span class="line">LABEL version=<span class="string">&quot;1.0&quot;</span></span><br><span class="line">LABEL author=<span class="string">&quot;xg&quot;</span></span><br><span class="line"></span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">COPY ./boot-dockerfile-1.0-SNAPSHOT.jar /app/boot-dockerfile-1.0-SNAPSHOT.jar</span><br><span class="line"></span><br><span class="line"><span class="comment"># 暴露Tomcat访问端口</span></span><br><span class="line">EXPOSE 8080</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行jar包</span></span><br><span class="line">CMD [<span class="string">&quot;java&quot;</span>, <span class="string">&quot;-jar&quot;</span>, <span class="string">&quot;boot-dockerfile-1.0-SNAPSHOT.jar&quot;</span>]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>构建Dockerfile</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker build -t bootjar:1.0 .</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动Docker镜像</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -dit -p 8080:8080 bootjar:1.0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl <span class="string">&quot;http://10.211.55.10:8080/hello?val=docker&quot;</span></span><br><span class="line"></span><br><span class="line">hello, docker</span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      <categories>
+        <category>docker</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
       </tags>
   </entry>
 </search>
