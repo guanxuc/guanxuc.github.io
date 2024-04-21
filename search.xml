@@ -19,6 +19,79 @@
 ]]></content>
   </entry>
   <entry>
+    <title>Dockerfile部署Springboot项目</title>
+    <url>/2023/12/04/docker/dockerfile_deploy_springboot/</url>
+    <content><![CDATA[<p>Dokcerfile官方文档：<a href="https://docs.docker.com/engine/reference/builder/">https://docs.docker.com/engine/reference/builder/</a><br>Docker仓库地址：<a href="https://hub.docker.com/">https://hub.docker.com/</a><br>官方镜像github地址：<a href="https://github.com/docker-library/official-images">https://github.com/docker-library/official-images</a></p>
+<span id="more"></span>
+
+<h1 id="Dockerfile创建运行环境"><a href="#Dockerfile创建运行环境" class="headerlink" title="Dockerfile创建运行环境"></a>Dockerfile创建运行环境</h1><p>环境要求：centos7.9.2009服务器 + JDK8</p>
+<ul>
+<li><p>编写Dockerfile</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">FROM centos:centos7.9.2009</span><br><span class="line"></span><br><span class="line">LABEL version=<span class="string">&quot;1.0&quot;</span></span><br><span class="line">LABEL author=<span class="string">&quot;xg&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加并解压缩jdk安装包</span></span><br><span class="line">ADD ./jdk-8u381-linux-aarch64.tar.gz /usr/local/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装jdk</span></span><br><span class="line">RUN <span class="built_in">rm</span> -rf /usr/local/jdk-8u381-linux-aarch64.tar.gz &amp;&amp; yum clean all</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">ENV JAVA_HOME=/usr/local/jdk1.8.0_381</span><br><span class="line">ENV PATH=<span class="variable">$PATH</span>:<span class="variable">$JAVA_HOME</span>/bin</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置工作目录，在这个目录下存放springboot jar包</span></span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">CMD [<span class="string">&quot;bash&quot;</span>]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>构建镜像</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -t参数指定镜像名称以及版本，即：centos7/jdk8:1.0</span></span><br><span class="line">docker build -t centos7/jdk8:1.0 .</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看镜像</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker images</span><br><span class="line"></span><br><span class="line"><span class="comment"># 出现下面内容表示构建成功</span></span><br><span class="line">REPOSITORY     TAG                 IMAGE ID       CREATED         SIZE</span><br><span class="line">centos7/jdk8   1.0                 44af210bd7d2   20 hours ago    503MB</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="Dockerfile部署Springboot项目"><a href="#Dockerfile部署Springboot项目" class="headerlink" title="Dockerfile部署Springboot项目"></a>Dockerfile部署Springboot项目</h1><p>基于刚刚构建好的 centos7&#x2F;jdk8:1.0 环境，将springboot jar包部署到运行环境</p>
+<ul>
+<li><p>编写Dockerfile</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">FROM centos7/jdk8:1.0</span><br><span class="line"></span><br><span class="line">LABEL version=<span class="string">&quot;1.0&quot;</span></span><br><span class="line">LABEL author=<span class="string">&quot;xg&quot;</span></span><br><span class="line"></span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">COPY ./boot-dockerfile-1.0-SNAPSHOT.jar /app/boot-dockerfile-1.0-SNAPSHOT.jar</span><br><span class="line"></span><br><span class="line"><span class="comment"># 暴露Tomcat访问端口</span></span><br><span class="line">EXPOSE 8080</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行jar包</span></span><br><span class="line">CMD [<span class="string">&quot;java&quot;</span>, <span class="string">&quot;-jar&quot;</span>, <span class="string">&quot;boot-dockerfile-1.0-SNAPSHOT.jar&quot;</span>]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>构建Dockerfile</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker build -t bootjar:1.0 .</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动Docker镜像</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -dit -p 8080:8080 bootjar:1.0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl <span class="string">&quot;http://10.211.55.10:8080/hello?val=docker&quot;</span></span><br><span class="line"></span><br><span class="line">hello, docker</span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      <categories>
+        <category>docker</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>梅梅的做饭指南</title>
+    <url>/2024/04/20/life/cooking-guide/</url>
+    <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><ul>
+<li>梅梅美食小课堂开课啦, 拿出笔记本好好记好好学~</li>
+</ul>
+<span id="more"></span>
+
+<h1 id="Cooking-Guide"><a href="#Cooking-Guide" class="headerlink" title="Cooking Guide"></a>Cooking Guide</h1><h2 id="回锅肉"><a href="#回锅肉" class="headerlink" title="回锅肉"></a>回锅肉</h2><p>准备食材: 肥瘦相间的五花肉片, 豆瓣酱, 姜, 葱, 蒜苗(配菜, 也可以换成包菜等)</p>
+<ol>
+<li>加入姜片和葱, 热水下入五花肉煮至7-8分熟用筷子能插进去的程度, 然后用冷水泡一下, 这样可以让肉更有弹性</li>
+<li>热锅给油, 油温烫了加一勺豆瓣酱</li>
+<li>下入姜末, 大葱葱段爆香</li>
+<li>下入五花肉片, 炒至变成黄色</li>
+<li>最后加入蒜苗, 喜欢吃豆豉的话可以加一点豆豉</li>
+<li>炒熟之后加入两滴酱油, 适量的盐和味精</li>
+<li>起锅, 一道美味的回锅肉就做好啦</li>
+</ol>
+<h2 id="竹笋炒肉"><a href="#竹笋炒肉" class="headerlink" title="竹笋炒肉"></a>竹笋炒肉</h2><p>准备食材: 牛肉&#x2F;猪肉：切片；新鲜嫰竹笋：剥壳，切片，泡水洗净，3-5次；红辣椒：1根，切丁；</p>
+<ol>
+<li>腌肉片，1勺生抽+1勺耗油+1勺淀粉+1勺食用油，腌制15分钟</li>
+<li>焯水，沸水+适量盐, 煮3-5分钟, 去涩味，晾干</li>
+<li>热锅冷油煸炒肉片，炒出油脂倒入红辣椒翻炒均匀</li>
+<li>倒入春笋翻炒2分钟，加入一勺生抽、半勺老抽、一勺耗油、适量味精，起锅</li>
+</ol>
+]]></content>
+      <categories>
+        <category>生活</category>
+      </categories>
+      <tags>
+        <tag>生活</tag>
+        <tag>美食</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>电影清单</title>
     <url>/2024/04/19/life/sharing_movie/</url>
     <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><ul>
@@ -31,9 +104,8 @@
 <tr>
 <th>电影名称</th>
 <th>观影时间</th>
-<th>我的评分</th>
-<th>梅梅评分</th>
-<th>评论</th>
+<th>我们的评分</th>
+<th>我们的评论</th>
 </tr>
 </thead>
 <tbody><tr>
@@ -41,13 +113,11 @@
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
 <td></td>
-<td></td>
 </tr>
 <tr>
 <td>2.奇遇-安东尼奥尼</td>
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
-<td></td>
 <td></td>
 </tr>
 <tr>
@@ -55,13 +125,11 @@
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
 <td></td>
-<td></td>
 </tr>
 <tr>
 <td>4.德州巴黎-文德斯</td>
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
-<td></td>
 <td></td>
 </tr>
 <tr>
@@ -69,13 +137,11 @@
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
 <td></td>
-<td></td>
 </tr>
 <tr>
 <td>6.樱桃的滋味-阿巴斯</td>
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
-<td></td>
 <td></td>
 </tr>
 <tr>
@@ -83,13 +149,11 @@
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
 <td></td>
-<td></td>
 </tr>
 <tr>
 <td>8.飞越疯人院-米洛斯·福尔曼</td>
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
-<td></td>
 <td></td>
 </tr>
 <tr>
@@ -97,13 +161,11 @@
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
 <td></td>
-<td></td>
 </tr>
 <tr>
 <td>10.安妮霍尔-伍迪·艾伦</td>
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
-<td></td>
 <td></td>
 </tr>
 <tr>
@@ -111,13 +173,11 @@
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
 <td></td>
-<td></td>
 </tr>
 <tr>
 <td>12.一江春水向东流-郑君里</td>
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
-<td></td>
 <td></td>
 </tr>
 <tr>
@@ -125,13 +185,11 @@
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
 <td></td>
-<td></td>
 </tr>
 <tr>
 <td>14.人·鬼·情-黄蜀芹</td>
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
-<td></td>
 <td></td>
 </tr>
 <tr>
@@ -139,13 +197,11 @@
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
 <td></td>
-<td></td>
 </tr>
 <tr>
 <td>16.李米的猜想-曹保平</td>
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
-<td></td>
 <td></td>
 </tr>
 <tr>
@@ -153,20 +209,11 @@
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
 <td></td>
-<td></td>
 </tr>
 <tr>
 <td>18.阿郎的故事-杜琪峰</td>
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>18.阿郎的故事-杜琪峰</td>
-<td></td>
-<td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
-<td></td>
 <td></td>
 </tr>
 <tr>
@@ -174,13 +221,11 @@
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
 <td></td>
-<td></td>
 </tr>
 <tr>
 <td>20.感官世界-大岛渚</td>
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
-<td></td>
 <td></td>
 </tr>
 <tr>
@@ -188,27 +233,23 @@
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
 <td></td>
-<td></td>
 </tr>
 <tr>
 <td>22.一个叫欧维的男人决定去死-汉内斯·赫尔姆</td>
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
 <td></td>
-<td></td>
 </tr>
 <tr>
 <td>23.爱在日落黄昏时-理查德·林克莱特</td>
-<td></td>
-<td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
-<td></td>
-<td></td>
+<td>2024-04-21 21:47:49</td>
+<td>梅:❤️❤️❤️❤️️️️️️️️♡<br/>鱼:❤️❤️❤️❤️️️️️️️️♡️</td>
+<td>梅:即便相别甚久仍然彼此靠近, so mete<br/>鱼:美丽却又意难平的爱情</td>
 </tr>
 <tr>
 <td>24.爱在午夜降临前-理查德·林克莱特</td>
 <td></td>
 <td>♡️♡️️️️️️️♡️♡️️️️️️️♡️</td>
-<td></td>
 <td></td>
 </tr>
 </tbody></table>
@@ -333,45 +374,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Dockerfile部署Springboot项目</title>
-    <url>/2023/12/04/docker/dockerfile_deploy_springboot/</url>
-    <content><![CDATA[<p>Dokcerfile官方文档：<a href="https://docs.docker.com/engine/reference/builder/">https://docs.docker.com/engine/reference/builder/</a><br>Docker仓库地址：<a href="https://hub.docker.com/">https://hub.docker.com/</a><br>官方镜像github地址：<a href="https://github.com/docker-library/official-images">https://github.com/docker-library/official-images</a></p>
-<span id="more"></span>
-
-<h1 id="Dockerfile创建运行环境"><a href="#Dockerfile创建运行环境" class="headerlink" title="Dockerfile创建运行环境"></a>Dockerfile创建运行环境</h1><p>环境要求：centos7.9.2009服务器 + JDK8</p>
-<ul>
-<li><p>编写Dockerfile</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">FROM centos:centos7.9.2009</span><br><span class="line"></span><br><span class="line">LABEL version=<span class="string">&quot;1.0&quot;</span></span><br><span class="line">LABEL author=<span class="string">&quot;xg&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加并解压缩jdk安装包</span></span><br><span class="line">ADD ./jdk-8u381-linux-aarch64.tar.gz /usr/local/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装jdk</span></span><br><span class="line">RUN <span class="built_in">rm</span> -rf /usr/local/jdk-8u381-linux-aarch64.tar.gz &amp;&amp; yum clean all</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">ENV JAVA_HOME=/usr/local/jdk1.8.0_381</span><br><span class="line">ENV PATH=<span class="variable">$PATH</span>:<span class="variable">$JAVA_HOME</span>/bin</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置工作目录，在这个目录下存放springboot jar包</span></span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">CMD [<span class="string">&quot;bash&quot;</span>]</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>构建镜像</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -t参数指定镜像名称以及版本，即：centos7/jdk8:1.0</span></span><br><span class="line">docker build -t centos7/jdk8:1.0 .</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>查看镜像</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker images</span><br><span class="line"></span><br><span class="line"><span class="comment"># 出现下面内容表示构建成功</span></span><br><span class="line">REPOSITORY     TAG                 IMAGE ID       CREATED         SIZE</span><br><span class="line">centos7/jdk8   1.0                 44af210bd7d2   20 hours ago    503MB</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h1 id="Dockerfile部署Springboot项目"><a href="#Dockerfile部署Springboot项目" class="headerlink" title="Dockerfile部署Springboot项目"></a>Dockerfile部署Springboot项目</h1><p>基于刚刚构建好的 centos7&#x2F;jdk8:1.0 环境，将springboot jar包部署到运行环境</p>
-<ul>
-<li><p>编写Dockerfile</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">FROM centos7/jdk8:1.0</span><br><span class="line"></span><br><span class="line">LABEL version=<span class="string">&quot;1.0&quot;</span></span><br><span class="line">LABEL author=<span class="string">&quot;xg&quot;</span></span><br><span class="line"></span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">COPY ./boot-dockerfile-1.0-SNAPSHOT.jar /app/boot-dockerfile-1.0-SNAPSHOT.jar</span><br><span class="line"></span><br><span class="line"><span class="comment"># 暴露Tomcat访问端口</span></span><br><span class="line">EXPOSE 8080</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行jar包</span></span><br><span class="line">CMD [<span class="string">&quot;java&quot;</span>, <span class="string">&quot;-jar&quot;</span>, <span class="string">&quot;boot-dockerfile-1.0-SNAPSHOT.jar&quot;</span>]</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>构建Dockerfile</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker build -t bootjar:1.0 .</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>启动Docker镜像</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -dit -p 8080:8080 bootjar:1.0</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>测试</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl <span class="string">&quot;http://10.211.55.10:8080/hello?val=docker&quot;</span></span><br><span class="line"></span><br><span class="line">hello, docker</span><br></pre></td></tr></table></figure></li>
-</ul>
-]]></content>
-      <categories>
-        <category>docker</category>
-      </categories>
-      <tags>
-        <tag>docker</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>curl命令</title>
     <url>/2023/08/06/web/curl_simple_command/</url>
     <content><![CDATA[<h1 id="1、概述"><a href="#1、概述" class="headerlink" title="1、概述"></a>1、概述</h1><p>curl 是常用的命令行工具，用来请求 Web 服务器。它的名字就是客户端（client）的 URL 工具的意思。<br />参考文档：<a href="https://www.ruanyifeng.com/blog/2019/09/curl-reference.html">https://www.ruanyifeng.com/blog/2019/09/curl-reference.html</a></p>
@@ -416,40 +418,6 @@
       <tags>
         <tag>网络</tag>
         <tag>工具</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>梅梅的做饭指南</title>
-    <url>/2024/04/20/life/cooking-guide/</url>
-    <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><ul>
-<li>梅梅美食小课堂开课啦, 拿出笔记本好好记好好学~</li>
-</ul>
-<span id="more"></span>
-
-<h1 id="Cooking-Guide"><a href="#Cooking-Guide" class="headerlink" title="Cooking Guide"></a>Cooking Guide</h1><h2 id="回锅肉"><a href="#回锅肉" class="headerlink" title="回锅肉"></a>回锅肉</h2><p>准备食材: 肥瘦相间的五花肉片, 豆瓣酱, 姜, 葱, 蒜苗(配菜, 也可以换成包菜等)</p>
-<ol>
-<li>加入姜片和葱, 热水下入五花肉煮至7-8分熟用筷子能插进去的程度, 然后用冷水泡一下, 这样可以让肉更有弹性</li>
-<li>热锅给油, 油温烫了加一勺豆瓣酱</li>
-<li>下入姜末, 大葱葱段爆香</li>
-<li>下入五花肉片, 炒至变成黄色</li>
-<li>最后加入蒜苗, 喜欢吃豆豉的话可以加一点豆豉</li>
-<li>炒熟之后加入两滴酱油, 适量的盐和味精</li>
-<li>起锅, 一道美味的回锅肉就做好啦</li>
-</ol>
-<h2 id="竹笋炒肉"><a href="#竹笋炒肉" class="headerlink" title="竹笋炒肉"></a>竹笋炒肉</h2><p>准备食材: <br><br>牛肉&#x2F;猪肉：切片；<br><br>新鲜嫰竹笋：剥壳，切片，泡水洗净，3-5次；<br><br>红辣椒：1根，切丁；<br></p>
-<ol>
-<li>腌肉片，1勺生抽+1勺耗油+1勺淀粉+1勺食用油，腌制15分钟</li>
-<li>焯水，沸水+适量盐, 煮3-5分钟, 去涩味，晾干</li>
-<li>热锅冷油煸炒肉片，炒出油脂倒入红辣椒翻炒均匀</li>
-<li>倒入春笋翻炒2分钟，加入一勺生抽、半勺老抽、一勺耗油、适量味精，起锅</li>
-</ol>
-]]></content>
-      <categories>
-        <category>生活</category>
-      </categories>
-      <tags>
-        <tag>生活</tag>
-        <tag>美食</tag>
       </tags>
   </entry>
   <entry>
