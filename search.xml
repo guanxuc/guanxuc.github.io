@@ -19,45 +19,6 @@
 ]]></content>
   </entry>
   <entry>
-    <title>Dockerfile部署Springboot项目</title>
-    <url>/2023/12/04/docker/dockerfile_deploy_springboot/</url>
-    <content><![CDATA[<p>Dokcerfile官方文档：<a href="https://docs.docker.com/engine/reference/builder/">https://docs.docker.com/engine/reference/builder/</a><br>Docker仓库地址：<a href="https://hub.docker.com/">https://hub.docker.com/</a><br>官方镜像github地址：<a href="https://github.com/docker-library/official-images">https://github.com/docker-library/official-images</a></p>
-<span id="more"></span>
-
-<h1 id="Dockerfile创建运行环境"><a href="#Dockerfile创建运行环境" class="headerlink" title="Dockerfile创建运行环境"></a>Dockerfile创建运行环境</h1><p>环境要求：centos7.9.2009服务器 + JDK8</p>
-<ul>
-<li><p>编写Dockerfile</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">FROM centos:centos7.9.2009</span><br><span class="line"></span><br><span class="line">LABEL version=<span class="string">&quot;1.0&quot;</span></span><br><span class="line">LABEL author=<span class="string">&quot;xg&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加并解压缩jdk安装包</span></span><br><span class="line">ADD ./jdk-8u381-linux-aarch64.tar.gz /usr/local/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装jdk</span></span><br><span class="line">RUN <span class="built_in">rm</span> -rf /usr/local/jdk-8u381-linux-aarch64.tar.gz &amp;&amp; yum clean all</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">ENV JAVA_HOME=/usr/local/jdk1.8.0_381</span><br><span class="line">ENV PATH=<span class="variable">$PATH</span>:<span class="variable">$JAVA_HOME</span>/bin</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置工作目录，在这个目录下存放springboot jar包</span></span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">CMD [<span class="string">&quot;bash&quot;</span>]</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>构建镜像</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -t参数指定镜像名称以及版本，即：centos7/jdk8:1.0</span></span><br><span class="line">docker build -t centos7/jdk8:1.0 .</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>查看镜像</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker images</span><br><span class="line"></span><br><span class="line"><span class="comment"># 出现下面内容表示构建成功</span></span><br><span class="line">REPOSITORY     TAG                 IMAGE ID       CREATED         SIZE</span><br><span class="line">centos7/jdk8   1.0                 44af210bd7d2   20 hours ago    503MB</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h1 id="Dockerfile部署Springboot项目"><a href="#Dockerfile部署Springboot项目" class="headerlink" title="Dockerfile部署Springboot项目"></a>Dockerfile部署Springboot项目</h1><p>基于刚刚构建好的 centos7&#x2F;jdk8:1.0 环境，将springboot jar包部署到运行环境</p>
-<ul>
-<li><p>编写Dockerfile</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">FROM centos7/jdk8:1.0</span><br><span class="line"></span><br><span class="line">LABEL version=<span class="string">&quot;1.0&quot;</span></span><br><span class="line">LABEL author=<span class="string">&quot;xg&quot;</span></span><br><span class="line"></span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">COPY ./boot-dockerfile-1.0-SNAPSHOT.jar /app/boot-dockerfile-1.0-SNAPSHOT.jar</span><br><span class="line"></span><br><span class="line"><span class="comment"># 暴露Tomcat访问端口</span></span><br><span class="line">EXPOSE 8080</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行jar包</span></span><br><span class="line">CMD [<span class="string">&quot;java&quot;</span>, <span class="string">&quot;-jar&quot;</span>, <span class="string">&quot;boot-dockerfile-1.0-SNAPSHOT.jar&quot;</span>]</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>构建Dockerfile</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker build -t bootjar:1.0 .</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>启动Docker镜像</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -dit -p 8080:8080 bootjar:1.0</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>测试</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl <span class="string">&quot;http://10.211.55.10:8080/hello?val=docker&quot;</span></span><br><span class="line"></span><br><span class="line">hello, docker</span><br></pre></td></tr></table></figure></li>
-</ul>
-]]></content>
-      <categories>
-        <category>docker</category>
-      </categories>
-      <tags>
-        <tag>docker</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>梅梅的做饭指南</title>
     <url>/2024/04/20/life/cooking-guide/</url>
     <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><ul>
@@ -244,7 +205,7 @@
 <td>23.爱在日落黄昏时-理查德·林克莱特</td>
 <td>2024-04-21 21:47:49</td>
 <td>梅:❤️❤️❤️❤️️️️️️️️♡<br/>鱼:❤️❤️❤️❤️️️️️️️️♡️</td>
-<td>梅:即便相别甚久仍然彼此靠近, so mete<br/>鱼:美丽却又意难平的爱情</td>
+<td>梅:即便相别甚久仍然彼此靠近,so mete!<br/>鱼:美丽却又意难平的爱情</td>
 </tr>
 <tr>
 <td>24.爱在午夜降临前-理查德·林克莱特</td>
@@ -374,50 +335,55 @@
       </tags>
   </entry>
   <entry>
-    <title>curl命令</title>
-    <url>/2023/08/06/web/curl_simple_command/</url>
-    <content><![CDATA[<h1 id="1、概述"><a href="#1、概述" class="headerlink" title="1、概述"></a>1、概述</h1><p>curl 是常用的命令行工具，用来请求 Web 服务器。它的名字就是客户端（client）的 URL 工具的意思。<br />参考文档：<a href="https://www.ruanyifeng.com/blog/2019/09/curl-reference.html">https://www.ruanyifeng.com/blog/2019/09/curl-reference.html</a></p>
+    <title>常用网址</title>
+    <url>/2024/06/23/life/useful_urls/</url>
+    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><ul>
+<li>记录一些常用的网址</li>
+</ul>
 <span id="more"></span>
 
-<h1 id="2、常用参数"><a href="#2、常用参数" class="headerlink" title="2、常用参数"></a>2、常用参数</h1><h2 id="X"><a href="#X" class="headerlink" title="-X"></a>-X</h2><p>-X 参数指定HTTP请求的方法，不写默认为GET请求</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 指定 post 请求</span></span><br><span class="line">$ curl -X POST http://www.example.com </span><br></pre></td></tr></table></figure>
-
-<h2 id="H"><a href="#H" class="headerlink" title="-H"></a>-H</h2><p><strong>-H 参数添加HTTP请求的标头</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 添加 Content-Type: application/json 和 Accept-Language: en-US 两个请求标头</span></span><br><span class="line">$ curl -H <span class="string">&#x27;Accept-Language: en-US&#x27;</span> -H <span class="string">&#x27;Content-Type: application/json&#x27;</span> http://www.baidu.com</span><br></pre></td></tr></table></figure>
-
-<h2 id="d-–data-urlencode"><a href="#d-–data-urlencode" class="headerlink" title="-d&#x2F;–data-urlencode"></a>-d&#x2F;–data-urlencode</h2><p><strong>-d 参数用于发送 POST 请求的数据体</strong>。使用 -d 参数以后，HTTP请求会自动加上标头Content-Type : application&#x2F;x-www-form-urlencoded。并且会自动将请求转为 POST 方法，因此可以省略-X POST。<br />–data-urlencode 参数等同于 -d ，发送POST请求的数据体，区别在于会自动将发送的数据进行URL编码。<br />多个参数可以使用使用多个 -d 参数，也可以使用 &amp; 进行参数拼接。<br />POST请求发送 json 格式请求体，可以配合使用<br /> -d ‘{“key”, “value”}’ -H ‘Content-Type: application&#x2F;json’ 。<br />-d 参数可以读取本地文本文件的数据，向服务器发送。例如使用<br />-d ‘@&#x2F;json.txt’ 参数即可使用本地文件json数据。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 多个参数</span></span><br><span class="line">$ curl -d <span class="string">&#x27;client_id=c1&#x27;</span> -d <span class="string">&#x27;client_secret=secret&#x27;</span> -d <span class="string">&#x27;grant_type=refresh_token&#x27;</span> -d <span class="string">&#x27;refresh_token=ef059eab-73e0-47d9-bf89-973603ae4551&#x27;</span> <span class="string">&#x27;http://localhost:12222/oauth/token&#x27;</span></span><br><span class="line">$ curl -d <span class="string">&#x27;client_id=c1&amp;client_secret=secret&amp;grant_type=refresh_token&amp;refresh_token=ef059eab-73e0-47d9-bf89-973603ae4551&#x27;</span> <span class="string">&#x27;http://localhost:12222/oauth/token&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 发送 json 格式请求体</span></span><br><span class="line">$ curl -d <span class="string">&#x27;&#123;&quot;username&quot;: &quot;admin&quot;, &quot;password&quot;: &quot;123&quot;&#125;&#x27;</span> -H <span class="string">&#x27;Content-Type: Application/json&#x27;</span> <span class="string">&#x27;http://localhost:8080/passwordLogin&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用本地文件</span></span><br><span class="line">$ curl -d <span class="string">&#x27;@json.txt&#x27;</span> <span class="string">&#x27;http://www.example.com&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># URL编码，对username的中文进行URL编码</span></span><br><span class="line">curl --data-urlencode <span class="string">&#x27;username=张三&#x27;</span> --data-urlencode <span class="string">&#x27;password=123&#x27;</span> <span class="string">&#x27;http://localhost:8080/form/passwordLogin&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="G"><a href="#G" class="headerlink" title="-G"></a>-G</h2><p>-G 参数用来构造URL的查询字符串，结合-d 参数进行url参数拼接，如果需要进行URL编码使用–data-urlencode 参数<br />如果不需要URL编码，url拼接更简单的方式是直接使用拼接后的url，用单引号引上即可，例如<code>curl &#39;http://www.example.com/page/list?pageNum=1&amp;pageSize=10&#39;</code></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># http://www.example.com/page/list?pageNum=1&amp;pageSize=10</span></span><br><span class="line">$ curl -G -d <span class="string">&#x27;pageNum=1&#x27;</span> -d <span class="string">&#x27;pageSize=10&#x27;</span> http://www.example.com/page</span><br><span class="line">$ curl <span class="string">&#x27;http://www.example.com/page?pageNum=1&amp;pageSize=10&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用URL编码</span></span><br><span class="line">curl -G --data-urlencode <span class="string">&#x27;username=张三&#x27;</span> --data-urlencode <span class="string">&#x27;password=123&#x27;</span> <span class="string">&#x27;http://localhost:8080/query/passwordLogin&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="i"><a href="#i" class="headerlink" title="-i"></a>-i</h2><p>-i 参数打印出服务器响应的 HTTP 标头。收到服务器回应后，先输出服务器回应的标头，然后空一行，再输出网页的源码。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -i http://www.baidu.com</span><br><span class="line"></span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Accept-Ranges: bytes</span><br><span class="line">Cache-Control: private, no-cache, no-store, proxy-revalidate, no-transform</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Content-Length: 2381</span><br><span class="line">Content-Type: text/html</span><br><span class="line">Date: Sun, 06 Aug 2023 03:25:49 GMT</span><br><span class="line">Etag: <span class="string">&quot;588604c8-94d&quot;</span></span><br><span class="line">Last-Modified: Mon, 23 Jan 2017 13:27:36 GMT</span><br><span class="line">Pragma: no-cache</span><br><span class="line">Server: bfe/1.0.8.18</span><br><span class="line">Set-Cookie: BDORZ=27315; max-age=86400; domain=.baidu.com; path=/</span><br><span class="line"></span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;!--STATUS OK--&gt;&lt;html&gt; &lt;<span class="built_in">head</span>&gt;&lt;meta http-equiv=content-type content=text/html;charset=utf-8&gt;&lt;meta http-equiv=X-UA-Compatible content=IE=Edge&gt;&lt;meta content=always name=referrer&gt;&lt;<span class="built_in">link</span> rel=stylesheet <span class="built_in">type</span>=text/css href=http://s1.bdstatic.com/r/www/cache/bdorz/baidu.min.css&gt;&lt;title&gt;百度一下，你就知道&lt;/title&gt;&lt;/head&gt; &lt;body <span class="built_in">link</span>=<span class="comment">#0000cc&gt; &lt;div id=wrapper&gt; &lt;div id=head&gt; &lt;div class=head_wrapper&gt; &lt;div class=s_form&gt; &lt;div class=s_form_wrapper&gt; &lt;div id=lg&gt; &lt;img hidefocus=true src=//www.baidu.com/img/bd_logo1.png width=270 height=129&gt; &lt;/div&gt; &lt;form id=form name=f action=//www.baidu.com/s class=fm&gt; &lt;input type=hidden name=bdorz_come value=1&gt; &lt;input type=hidden name=ie value=utf-8&gt; &lt;input type=hidden name=f value=8&gt; &lt;input type=hidden name=rsv_bp value=1&gt; &lt;input type=hidden name=rsv_idx value=1&gt; &lt;input type=hidden name=tn value=baidu&gt;&lt;span class=&quot;bg s_ipt_wr&quot;&gt;&lt;input id=kw name=wd class=s_ipt value maxlength=255 autocomplete=off autofocus&gt;&lt;/span&gt;&lt;span class=&quot;bg s_btn_wr&quot;&gt;&lt;input type=submit id=su value=百度一下 class=&quot;bg s_btn&quot;&gt;&lt;/span&gt; &lt;/form&gt; &lt;/div&gt; &lt;/div&gt; &lt;div id=u1&gt; &lt;a href=http://news.baidu.com name=tj_trnews class=mnav&gt;新闻&lt;/a&gt; &lt;a href=http://www.hao123.com name=tj_trhao123 class=mnav&gt;hao123&lt;/a&gt; &lt;a href=http://map.baidu.com name=tj_trmap class=mnav&gt;地图&lt;/a&gt; &lt;a href=http://v.baidu.com name=tj_trvideo class=mnav&gt;视频&lt;/a&gt; &lt;a href=http://tieba.baidu.com name=tj_trtieba class=mnav&gt;贴吧&lt;/a&gt; &lt;noscript&gt; &lt;a href=http://www.baidu.com/bdorz/login.gif?login&amp;amp;tpl=mn&amp;amp;u=http%3A%2F%2Fwww.baidu.com%2f%3fbdorz_come%3d1 name=tj_login class=lb&gt;登录&lt;/a&gt; &lt;/noscript&gt; &lt;script&gt;document.write(&#x27;&lt;a href=&quot;http://www.baidu.com/bdorz/login.gif?login&amp;tpl=mn&amp;u=&#x27;+ encodeURIComponent(window.location.href+ (window.location.search === &quot;&quot; ? &quot;?&quot; : &quot;&amp;&quot;)+ &quot;bdorz_come=1&quot;)+ &#x27;&quot; name=&quot;tj_login&quot; class=&quot;lb&quot;&gt;登录&lt;/a&gt;&#x27;);&lt;/script&gt; &lt;a href=//www.baidu.com/more/ name=tj_briicon class=bri style=&quot;display: block;&quot;&gt;更多产品&lt;/a&gt; &lt;/div&gt; &lt;/div&gt; &lt;/div&gt; &lt;div id=ftCon&gt; &lt;div id=ftConw&gt; &lt;p id=lh&gt; &lt;a href=http://home.baidu.com&gt;关于百度&lt;/a&gt; &lt;a href=http://ir.baidu.com&gt;About Baidu&lt;/a&gt; &lt;/p&gt; &lt;p id=cp&gt;&amp;copy;2017&amp;nbsp;Baidu&amp;nbsp;&lt;a href=http://www.baidu.com/duty/&gt;使用百度前必读&lt;/a&gt;&amp;nbsp; &lt;a href=http://jianyi.baidu.com/ class=cp-feedback&gt;意见反馈&lt;/a&gt;&amp;nbsp;京ICP证030173号&amp;nbsp; &lt;img src=//www.baidu.com/img/gs.gif&gt; &lt;/p&gt; &lt;/div&gt; &lt;/div&gt; &lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="b"><a href="#b" class="headerlink" title="-b"></a>-b</h2><p>-b 参数用来向服务器发送Cookie<br />发送多个Cookie，可以使用英文分号;进行分隔<br />-b 参数后接文件路径，也可以读取本地文件来发送Cookie</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 生成一个标头Cookie: foo=bar，向服务器发送一个名为foo、值为bar的 Cookie</span></span><br><span class="line">$ curl -b <span class="string">&#x27;foo=bar&#x27;</span> http://www.example.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 发送两个Cookie</span></span><br><span class="line">$ curl -b <span class="string">&#x27;foo1=bar1;foo2=bar2&#x27;</span> http://www.example.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取本地文件Cookie</span></span><br><span class="line">$ curl -b cookie.txt http://www.example.com</span><br></pre></td></tr></table></figure>
-
-<h2 id="A"><a href="#A" class="headerlink" title="-A"></a>-A</h2><p>-A 参数指定客户端的用户代理标头，即User-Agent。curl 的默认用户代理字符串是curl&#x2F;[version]<br />也可以通过 -H 参数直接指定标头，更改User-Agent</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 将用户代理标头改成 Chrome 浏览器</span></span><br><span class="line">$ curl -A <span class="string">&#x27;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36&#x27;</span></span><br><span class="line">$ curl -H <span class="string">&#x27;User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="e"><a href="#e" class="headerlink" title="-e"></a>-e</h2><p>-e 参数用来设置HTTP的标头Referer，表示请求的来源<br />也可以通过 -H 参数直接指定标头，更改Referer</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 将请求来源设置为google.com</span></span><br><span class="line">curl -e <span class="string">&#x27;https://google.com?q=example&#x27;</span> https://www.example.com</span><br><span class="line">curl -H <span class="string">&#x27;Referer: https://google.com?q=example&#x27;</span> https://www.example.com</span><br></pre></td></tr></table></figure>
-
-<h2 id="o"><a href="#o" class="headerlink" title="-o"></a>-o</h2><p>-o 参数将服务器的回应保存成文件，等同于wget命令，后接参数可以指定文件下载的路径以及名称</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 将阿里云yum镜像源文件下载到/etc/yum.repos.d/CentOS-Base.repo</span></span><br><span class="line">curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo</span><br></pre></td></tr></table></figure>
-
-<h1 id="3、curl简单实践"><a href="#3、curl简单实践" class="headerlink" title="3、curl简单实践"></a>3、curl简单实践</h1><p>需求：使用curl命令来实现oauth2.0密码模式获取token，以及使用token发送需要认证的请求。</p>
-<ul>
-<li>获取token</li>
-<li>使用token来发送需要登录的请求<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 1.获取access_token</span></span><br><span class="line">$ curl -i -d <span class="string">&#x27;username=root&#x27;</span> -d <span class="string">&#x27;password=123&#x27;</span> -d <span class="string">&#x27;grant_type=password&#x27;</span> -d <span class="string">&#x27;client_id=c1&#x27;</span> -d <span class="string">&#x27;client_secret=secret&#x27;</span> -d <span class="string">&#x27;redirect_uri=http://127.0.0.1:12222/open/sucess&#x27;</span> <span class="string">&#x27;http://localhost:12222/oauth/token&#x27;</span></span><br><span class="line"></span><br><span class="line">HTTP/1.1 200</span><br><span class="line">Cache-Control: no-store</span><br><span class="line">Pragma: no-cache</span><br><span class="line">X-Content-Type-Options: nosniff</span><br><span class="line">X-XSS-Protection: 1; mode=block</span><br><span class="line">X-Frame-Options: DENY</span><br><span class="line">Content-Type: application/json;charset=UTF-8</span><br><span class="line">Transfer-Encoding: chunked</span><br><span class="line">Date: Sun, 06 Aug 2023 12:45:50 GMT</span><br><span class="line"></span><br><span class="line">&#123;<span class="string">&quot;access_token&quot;</span>:<span class="string">&quot;36f4c522-909b-46a1-a3e7-d15343b8419e&quot;</span>,<span class="string">&quot;token_type&quot;</span>:<span class="string">&quot;bearer&quot;</span>,<span class="string">&quot;refresh_token&quot;</span>:<span class="string">&quot;ba92d79a-2fcd-430d-8a0f-04fd39206195&quot;</span>,<span class="string">&quot;expires_in&quot;</span>:3599,<span class="string">&quot;scope&quot;</span>:<span class="string">&quot;all&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2.携带token访问资源</span></span><br><span class="line">curl -i -H <span class="string">&#x27;Authorization: Bearer 36f4c522-909b-46a1-a3e7-d15343b8419e&#x27;</span> http://localhost:10000/hello</span><br><span class="line"></span><br><span class="line">HTTP/1.1 200</span><br><span class="line">Vary: Origin</span><br><span class="line">Vary: Access-Control-Request-Method</span><br><span class="line">Vary: Access-Control-Request-Headers</span><br><span class="line">X-Content-Type-Options: nosniff</span><br><span class="line">X-XSS-Protection: 1; mode=block</span><br><span class="line">Cache-Control: no-cache, no-store, max-age=0, must-revalidate</span><br><span class="line">Pragma: no-cache</span><br><span class="line">Expires: 0</span><br><span class="line">X-Frame-Options: DENY</span><br><span class="line">Content-Type: text/plain;charset=UTF-8</span><br><span class="line">Content-Length: 108</span><br><span class="line">Date: Sun, 06 Aug 2023 12:47:37 GMT</span><br><span class="line"></span><br><span class="line">&#123;<span class="string">&quot;success&quot;</span>:<span class="literal">true</span>,<span class="string">&quot;code&quot;</span>:<span class="string">&quot;200&quot;</span>,<span class="string">&quot;msg&quot;</span>:<span class="string">&quot;成功&quot;</span>,<span class="string">&quot;respTime&quot;</span>:<span class="string">&quot;2023-08-06 20:47:37&quot;</span>,<span class="string">&quot;data&quot;</span>:<span class="string">&quot;hello, you have logon&quot;</span>&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
+<h1 id="网址"><a href="#网址" class="headerlink" title="网址"></a>网址</h1><table>
+<thead>
+<tr>
+<th>描述</th>
+<th>网址</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>wallhaven-壁纸下载</td>
+<td><a href="https://www.wallhaven.cc/">https://www.wallhaven.cc</a></td>
+</tr>
+<tr>
+<td>无名小站-电影</td>
+<td><a href="https://www.btnull.net/">https://www.btnull.net</a></td>
+</tr>
+<tr>
+<td>processon-在线流程图</td>
+<td><a href="https://www.processon.com/">https://www.processon.com/</a></td>
+</tr>
+<tr>
+<td>极简插件-浏览器插件下载</td>
+<td><a href="https://chrome.zzzmh.cn/index">https://chrome.zzzmh.cn/index</a></td>
+</tr>
+<tr>
+<td>msdn-操作系统镜像下载</td>
+<td><a href="https://msdn.itellyou.cn/">https://msdn.itellyou.cn/</a></td>
+</tr>
+<tr>
+<td>zlibrary-下载书籍</td>
+<td><a href="https://zh.z-library.rs/">https://zh.z-library.rs/</a></td>
+</tr>
+<tr>
+<td>jetbrains激活</td>
+<td><a href="https://jetbra.in/s">https://jetbra.in/s</a></td>
+</tr>
+</tbody></table>
 ]]></content>
       <categories>
-        <category>网络</category>
+        <category>生活</category>
       </categories>
       <tags>
-        <tag>网络</tag>
-        <tag>工具</tag>
+        <tag>生活</tag>
       </tags>
   </entry>
   <entry>
@@ -450,6 +416,45 @@
       </categories>
       <tags>
         <tag>springboot</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Dockerfile部署Springboot项目</title>
+    <url>/2023/12/04/docker/dockerfile_deploy_springboot/</url>
+    <content><![CDATA[<p>Dokcerfile官方文档：<a href="https://docs.docker.com/engine/reference/builder/">https://docs.docker.com/engine/reference/builder/</a><br>Docker仓库地址：<a href="https://hub.docker.com/">https://hub.docker.com/</a><br>官方镜像github地址：<a href="https://github.com/docker-library/official-images">https://github.com/docker-library/official-images</a></p>
+<span id="more"></span>
+
+<h1 id="Dockerfile创建运行环境"><a href="#Dockerfile创建运行环境" class="headerlink" title="Dockerfile创建运行环境"></a>Dockerfile创建运行环境</h1><p>环境要求：centos7.9.2009服务器 + JDK8</p>
+<ul>
+<li><p>编写Dockerfile</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">FROM centos:centos7.9.2009</span><br><span class="line"></span><br><span class="line">LABEL version=<span class="string">&quot;1.0&quot;</span></span><br><span class="line">LABEL author=<span class="string">&quot;xg&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加并解压缩jdk安装包</span></span><br><span class="line">ADD ./jdk-8u381-linux-aarch64.tar.gz /usr/local/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装jdk</span></span><br><span class="line">RUN <span class="built_in">rm</span> -rf /usr/local/jdk-8u381-linux-aarch64.tar.gz &amp;&amp; yum clean all</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置环境变量</span></span><br><span class="line">ENV JAVA_HOME=/usr/local/jdk1.8.0_381</span><br><span class="line">ENV PATH=<span class="variable">$PATH</span>:<span class="variable">$JAVA_HOME</span>/bin</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置工作目录，在这个目录下存放springboot jar包</span></span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">CMD [<span class="string">&quot;bash&quot;</span>]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>构建镜像</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -t参数指定镜像名称以及版本，即：centos7/jdk8:1.0</span></span><br><span class="line">docker build -t centos7/jdk8:1.0 .</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看镜像</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker images</span><br><span class="line"></span><br><span class="line"><span class="comment"># 出现下面内容表示构建成功</span></span><br><span class="line">REPOSITORY     TAG                 IMAGE ID       CREATED         SIZE</span><br><span class="line">centos7/jdk8   1.0                 44af210bd7d2   20 hours ago    503MB</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="Dockerfile部署Springboot项目"><a href="#Dockerfile部署Springboot项目" class="headerlink" title="Dockerfile部署Springboot项目"></a>Dockerfile部署Springboot项目</h1><p>基于刚刚构建好的 centos7&#x2F;jdk8:1.0 环境，将springboot jar包部署到运行环境</p>
+<ul>
+<li><p>编写Dockerfile</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">FROM centos7/jdk8:1.0</span><br><span class="line"></span><br><span class="line">LABEL version=<span class="string">&quot;1.0&quot;</span></span><br><span class="line">LABEL author=<span class="string">&quot;xg&quot;</span></span><br><span class="line"></span><br><span class="line">WORKDIR /app</span><br><span class="line"></span><br><span class="line">COPY ./boot-dockerfile-1.0-SNAPSHOT.jar /app/boot-dockerfile-1.0-SNAPSHOT.jar</span><br><span class="line"></span><br><span class="line"><span class="comment"># 暴露Tomcat访问端口</span></span><br><span class="line">EXPOSE 8080</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行jar包</span></span><br><span class="line">CMD [<span class="string">&quot;java&quot;</span>, <span class="string">&quot;-jar&quot;</span>, <span class="string">&quot;boot-dockerfile-1.0-SNAPSHOT.jar&quot;</span>]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>构建Dockerfile</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker build -t bootjar:1.0 .</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动Docker镜像</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -dit -p 8080:8080 bootjar:1.0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl <span class="string">&quot;http://10.211.55.10:8080/hello?val=docker&quot;</span></span><br><span class="line"></span><br><span class="line">hello, docker</span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      <categories>
+        <category>docker</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
       </tags>
   </entry>
   <entry>
@@ -575,6 +580,53 @@
       </categories>
       <tags>
         <tag>springboot</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>curl命令</title>
+    <url>/2023/08/06/web/curl_simple_command/</url>
+    <content><![CDATA[<h1 id="1、概述"><a href="#1、概述" class="headerlink" title="1、概述"></a>1、概述</h1><p>curl 是常用的命令行工具，用来请求 Web 服务器。它的名字就是客户端（client）的 URL 工具的意思。<br />参考文档：<a href="https://www.ruanyifeng.com/blog/2019/09/curl-reference.html">https://www.ruanyifeng.com/blog/2019/09/curl-reference.html</a></p>
+<span id="more"></span>
+
+<h1 id="2、常用参数"><a href="#2、常用参数" class="headerlink" title="2、常用参数"></a>2、常用参数</h1><h2 id="X"><a href="#X" class="headerlink" title="-X"></a>-X</h2><p>-X 参数指定HTTP请求的方法，不写默认为GET请求</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 指定 post 请求</span></span><br><span class="line">$ curl -X POST http://www.example.com </span><br></pre></td></tr></table></figure>
+
+<h2 id="H"><a href="#H" class="headerlink" title="-H"></a>-H</h2><p><strong>-H 参数添加HTTP请求的标头</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 添加 Content-Type: application/json 和 Accept-Language: en-US 两个请求标头</span></span><br><span class="line">$ curl -H <span class="string">&#x27;Accept-Language: en-US&#x27;</span> -H <span class="string">&#x27;Content-Type: application/json&#x27;</span> http://www.baidu.com</span><br></pre></td></tr></table></figure>
+
+<h2 id="d-–data-urlencode"><a href="#d-–data-urlencode" class="headerlink" title="-d&#x2F;–data-urlencode"></a>-d&#x2F;–data-urlencode</h2><p><strong>-d 参数用于发送 POST 请求的数据体</strong>。使用 -d 参数以后，HTTP请求会自动加上标头Content-Type : application&#x2F;x-www-form-urlencoded。并且会自动将请求转为 POST 方法，因此可以省略-X POST。<br />–data-urlencode 参数等同于 -d ，发送POST请求的数据体，区别在于会自动将发送的数据进行URL编码。<br />多个参数可以使用使用多个 -d 参数，也可以使用 &amp; 进行参数拼接。<br />POST请求发送 json 格式请求体，可以配合使用<br /> -d ‘{“key”, “value”}’ -H ‘Content-Type: application&#x2F;json’ 。<br />-d 参数可以读取本地文本文件的数据，向服务器发送。例如使用<br />-d ‘@&#x2F;json.txt’ 参数即可使用本地文件json数据。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 多个参数</span></span><br><span class="line">$ curl -d <span class="string">&#x27;client_id=c1&#x27;</span> -d <span class="string">&#x27;client_secret=secret&#x27;</span> -d <span class="string">&#x27;grant_type=refresh_token&#x27;</span> -d <span class="string">&#x27;refresh_token=ef059eab-73e0-47d9-bf89-973603ae4551&#x27;</span> <span class="string">&#x27;http://localhost:12222/oauth/token&#x27;</span></span><br><span class="line">$ curl -d <span class="string">&#x27;client_id=c1&amp;client_secret=secret&amp;grant_type=refresh_token&amp;refresh_token=ef059eab-73e0-47d9-bf89-973603ae4551&#x27;</span> <span class="string">&#x27;http://localhost:12222/oauth/token&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 发送 json 格式请求体</span></span><br><span class="line">$ curl -d <span class="string">&#x27;&#123;&quot;username&quot;: &quot;admin&quot;, &quot;password&quot;: &quot;123&quot;&#125;&#x27;</span> -H <span class="string">&#x27;Content-Type: Application/json&#x27;</span> <span class="string">&#x27;http://localhost:8080/passwordLogin&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用本地文件</span></span><br><span class="line">$ curl -d <span class="string">&#x27;@json.txt&#x27;</span> <span class="string">&#x27;http://www.example.com&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># URL编码，对username的中文进行URL编码</span></span><br><span class="line">curl --data-urlencode <span class="string">&#x27;username=张三&#x27;</span> --data-urlencode <span class="string">&#x27;password=123&#x27;</span> <span class="string">&#x27;http://localhost:8080/form/passwordLogin&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="G"><a href="#G" class="headerlink" title="-G"></a>-G</h2><p>-G 参数用来构造URL的查询字符串，结合-d 参数进行url参数拼接，如果需要进行URL编码使用–data-urlencode 参数<br />如果不需要URL编码，url拼接更简单的方式是直接使用拼接后的url，用单引号引上即可，例如<code>curl &#39;http://www.example.com/page/list?pageNum=1&amp;pageSize=10&#39;</code></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># http://www.example.com/page/list?pageNum=1&amp;pageSize=10</span></span><br><span class="line">$ curl -G -d <span class="string">&#x27;pageNum=1&#x27;</span> -d <span class="string">&#x27;pageSize=10&#x27;</span> http://www.example.com/page</span><br><span class="line">$ curl <span class="string">&#x27;http://www.example.com/page?pageNum=1&amp;pageSize=10&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用URL编码</span></span><br><span class="line">curl -G --data-urlencode <span class="string">&#x27;username=张三&#x27;</span> --data-urlencode <span class="string">&#x27;password=123&#x27;</span> <span class="string">&#x27;http://localhost:8080/query/passwordLogin&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="i"><a href="#i" class="headerlink" title="-i"></a>-i</h2><p>-i 参数打印出服务器响应的 HTTP 标头。收到服务器回应后，先输出服务器回应的标头，然后空一行，再输出网页的源码。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -i http://www.baidu.com</span><br><span class="line"></span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Accept-Ranges: bytes</span><br><span class="line">Cache-Control: private, no-cache, no-store, proxy-revalidate, no-transform</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Content-Length: 2381</span><br><span class="line">Content-Type: text/html</span><br><span class="line">Date: Sun, 06 Aug 2023 03:25:49 GMT</span><br><span class="line">Etag: <span class="string">&quot;588604c8-94d&quot;</span></span><br><span class="line">Last-Modified: Mon, 23 Jan 2017 13:27:36 GMT</span><br><span class="line">Pragma: no-cache</span><br><span class="line">Server: bfe/1.0.8.18</span><br><span class="line">Set-Cookie: BDORZ=27315; max-age=86400; domain=.baidu.com; path=/</span><br><span class="line"></span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;!--STATUS OK--&gt;&lt;html&gt; &lt;<span class="built_in">head</span>&gt;&lt;meta http-equiv=content-type content=text/html;charset=utf-8&gt;&lt;meta http-equiv=X-UA-Compatible content=IE=Edge&gt;&lt;meta content=always name=referrer&gt;&lt;<span class="built_in">link</span> rel=stylesheet <span class="built_in">type</span>=text/css href=http://s1.bdstatic.com/r/www/cache/bdorz/baidu.min.css&gt;&lt;title&gt;百度一下，你就知道&lt;/title&gt;&lt;/head&gt; &lt;body <span class="built_in">link</span>=<span class="comment">#0000cc&gt; &lt;div id=wrapper&gt; &lt;div id=head&gt; &lt;div class=head_wrapper&gt; &lt;div class=s_form&gt; &lt;div class=s_form_wrapper&gt; &lt;div id=lg&gt; &lt;img hidefocus=true src=//www.baidu.com/img/bd_logo1.png width=270 height=129&gt; &lt;/div&gt; &lt;form id=form name=f action=//www.baidu.com/s class=fm&gt; &lt;input type=hidden name=bdorz_come value=1&gt; &lt;input type=hidden name=ie value=utf-8&gt; &lt;input type=hidden name=f value=8&gt; &lt;input type=hidden name=rsv_bp value=1&gt; &lt;input type=hidden name=rsv_idx value=1&gt; &lt;input type=hidden name=tn value=baidu&gt;&lt;span class=&quot;bg s_ipt_wr&quot;&gt;&lt;input id=kw name=wd class=s_ipt value maxlength=255 autocomplete=off autofocus&gt;&lt;/span&gt;&lt;span class=&quot;bg s_btn_wr&quot;&gt;&lt;input type=submit id=su value=百度一下 class=&quot;bg s_btn&quot;&gt;&lt;/span&gt; &lt;/form&gt; &lt;/div&gt; &lt;/div&gt; &lt;div id=u1&gt; &lt;a href=http://news.baidu.com name=tj_trnews class=mnav&gt;新闻&lt;/a&gt; &lt;a href=http://www.hao123.com name=tj_trhao123 class=mnav&gt;hao123&lt;/a&gt; &lt;a href=http://map.baidu.com name=tj_trmap class=mnav&gt;地图&lt;/a&gt; &lt;a href=http://v.baidu.com name=tj_trvideo class=mnav&gt;视频&lt;/a&gt; &lt;a href=http://tieba.baidu.com name=tj_trtieba class=mnav&gt;贴吧&lt;/a&gt; &lt;noscript&gt; &lt;a href=http://www.baidu.com/bdorz/login.gif?login&amp;amp;tpl=mn&amp;amp;u=http%3A%2F%2Fwww.baidu.com%2f%3fbdorz_come%3d1 name=tj_login class=lb&gt;登录&lt;/a&gt; &lt;/noscript&gt; &lt;script&gt;document.write(&#x27;&lt;a href=&quot;http://www.baidu.com/bdorz/login.gif?login&amp;tpl=mn&amp;u=&#x27;+ encodeURIComponent(window.location.href+ (window.location.search === &quot;&quot; ? &quot;?&quot; : &quot;&amp;&quot;)+ &quot;bdorz_come=1&quot;)+ &#x27;&quot; name=&quot;tj_login&quot; class=&quot;lb&quot;&gt;登录&lt;/a&gt;&#x27;);&lt;/script&gt; &lt;a href=//www.baidu.com/more/ name=tj_briicon class=bri style=&quot;display: block;&quot;&gt;更多产品&lt;/a&gt; &lt;/div&gt; &lt;/div&gt; &lt;/div&gt; &lt;div id=ftCon&gt; &lt;div id=ftConw&gt; &lt;p id=lh&gt; &lt;a href=http://home.baidu.com&gt;关于百度&lt;/a&gt; &lt;a href=http://ir.baidu.com&gt;About Baidu&lt;/a&gt; &lt;/p&gt; &lt;p id=cp&gt;&amp;copy;2017&amp;nbsp;Baidu&amp;nbsp;&lt;a href=http://www.baidu.com/duty/&gt;使用百度前必读&lt;/a&gt;&amp;nbsp; &lt;a href=http://jianyi.baidu.com/ class=cp-feedback&gt;意见反馈&lt;/a&gt;&amp;nbsp;京ICP证030173号&amp;nbsp; &lt;img src=//www.baidu.com/img/gs.gif&gt; &lt;/p&gt; &lt;/div&gt; &lt;/div&gt; &lt;/div&gt; &lt;/body&gt; &lt;/html&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="b"><a href="#b" class="headerlink" title="-b"></a>-b</h2><p>-b 参数用来向服务器发送Cookie<br />发送多个Cookie，可以使用英文分号;进行分隔<br />-b 参数后接文件路径，也可以读取本地文件来发送Cookie</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 生成一个标头Cookie: foo=bar，向服务器发送一个名为foo、值为bar的 Cookie</span></span><br><span class="line">$ curl -b <span class="string">&#x27;foo=bar&#x27;</span> http://www.example.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 发送两个Cookie</span></span><br><span class="line">$ curl -b <span class="string">&#x27;foo1=bar1;foo2=bar2&#x27;</span> http://www.example.com</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取本地文件Cookie</span></span><br><span class="line">$ curl -b cookie.txt http://www.example.com</span><br></pre></td></tr></table></figure>
+
+<h2 id="A"><a href="#A" class="headerlink" title="-A"></a>-A</h2><p>-A 参数指定客户端的用户代理标头，即User-Agent。curl 的默认用户代理字符串是curl&#x2F;[version]<br />也可以通过 -H 参数直接指定标头，更改User-Agent</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 将用户代理标头改成 Chrome 浏览器</span></span><br><span class="line">$ curl -A <span class="string">&#x27;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36&#x27;</span></span><br><span class="line">$ curl -H <span class="string">&#x27;User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="e"><a href="#e" class="headerlink" title="-e"></a>-e</h2><p>-e 参数用来设置HTTP的标头Referer，表示请求的来源<br />也可以通过 -H 参数直接指定标头，更改Referer</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 将请求来源设置为google.com</span></span><br><span class="line">curl -e <span class="string">&#x27;https://google.com?q=example&#x27;</span> https://www.example.com</span><br><span class="line">curl -H <span class="string">&#x27;Referer: https://google.com?q=example&#x27;</span> https://www.example.com</span><br></pre></td></tr></table></figure>
+
+<h2 id="o"><a href="#o" class="headerlink" title="-o"></a>-o</h2><p>-o 参数将服务器的回应保存成文件，等同于wget命令，后接参数可以指定文件下载的路径以及名称</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 将阿里云yum镜像源文件下载到/etc/yum.repos.d/CentOS-Base.repo</span></span><br><span class="line">curl -o /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo</span><br></pre></td></tr></table></figure>
+
+<h1 id="3、curl简单实践"><a href="#3、curl简单实践" class="headerlink" title="3、curl简单实践"></a>3、curl简单实践</h1><p>需求：使用curl命令来实现oauth2.0密码模式获取token，以及使用token发送需要认证的请求。</p>
+<ul>
+<li>获取token</li>
+<li>使用token来发送需要登录的请求<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 1.获取access_token</span></span><br><span class="line">$ curl -i -d <span class="string">&#x27;username=root&#x27;</span> -d <span class="string">&#x27;password=123&#x27;</span> -d <span class="string">&#x27;grant_type=password&#x27;</span> -d <span class="string">&#x27;client_id=c1&#x27;</span> -d <span class="string">&#x27;client_secret=secret&#x27;</span> -d <span class="string">&#x27;redirect_uri=http://127.0.0.1:12222/open/sucess&#x27;</span> <span class="string">&#x27;http://localhost:12222/oauth/token&#x27;</span></span><br><span class="line"></span><br><span class="line">HTTP/1.1 200</span><br><span class="line">Cache-Control: no-store</span><br><span class="line">Pragma: no-cache</span><br><span class="line">X-Content-Type-Options: nosniff</span><br><span class="line">X-XSS-Protection: 1; mode=block</span><br><span class="line">X-Frame-Options: DENY</span><br><span class="line">Content-Type: application/json;charset=UTF-8</span><br><span class="line">Transfer-Encoding: chunked</span><br><span class="line">Date: Sun, 06 Aug 2023 12:45:50 GMT</span><br><span class="line"></span><br><span class="line">&#123;<span class="string">&quot;access_token&quot;</span>:<span class="string">&quot;36f4c522-909b-46a1-a3e7-d15343b8419e&quot;</span>,<span class="string">&quot;token_type&quot;</span>:<span class="string">&quot;bearer&quot;</span>,<span class="string">&quot;refresh_token&quot;</span>:<span class="string">&quot;ba92d79a-2fcd-430d-8a0f-04fd39206195&quot;</span>,<span class="string">&quot;expires_in&quot;</span>:3599,<span class="string">&quot;scope&quot;</span>:<span class="string">&quot;all&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2.携带token访问资源</span></span><br><span class="line">curl -i -H <span class="string">&#x27;Authorization: Bearer 36f4c522-909b-46a1-a3e7-d15343b8419e&#x27;</span> http://localhost:10000/hello</span><br><span class="line"></span><br><span class="line">HTTP/1.1 200</span><br><span class="line">Vary: Origin</span><br><span class="line">Vary: Access-Control-Request-Method</span><br><span class="line">Vary: Access-Control-Request-Headers</span><br><span class="line">X-Content-Type-Options: nosniff</span><br><span class="line">X-XSS-Protection: 1; mode=block</span><br><span class="line">Cache-Control: no-cache, no-store, max-age=0, must-revalidate</span><br><span class="line">Pragma: no-cache</span><br><span class="line">Expires: 0</span><br><span class="line">X-Frame-Options: DENY</span><br><span class="line">Content-Type: text/plain;charset=UTF-8</span><br><span class="line">Content-Length: 108</span><br><span class="line">Date: Sun, 06 Aug 2023 12:47:37 GMT</span><br><span class="line"></span><br><span class="line">&#123;<span class="string">&quot;success&quot;</span>:<span class="literal">true</span>,<span class="string">&quot;code&quot;</span>:<span class="string">&quot;200&quot;</span>,<span class="string">&quot;msg&quot;</span>:<span class="string">&quot;成功&quot;</span>,<span class="string">&quot;respTime&quot;</span>:<span class="string">&quot;2023-08-06 20:47:37&quot;</span>,<span class="string">&quot;data&quot;</span>:<span class="string">&quot;hello, you have logon&quot;</span>&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>网络</tag>
+        <tag>工具</tag>
       </tags>
   </entry>
 </search>
